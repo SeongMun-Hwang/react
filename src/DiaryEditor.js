@@ -1,4 +1,4 @@
-import {useState} from "react";
+import React,{useRef,useState} from "react";
 
 const DiaryEditor = () => {
     const [state, setState] = useState({
@@ -6,6 +6,8 @@ const DiaryEditor = () => {
         content: "",
         emotion: 1,
     })
+    const AuthorInput =useRef();
+    const ContentInput=useRef();
 
     const HandelChangeState=(e)=>{
         setState({
@@ -13,20 +15,27 @@ const DiaryEditor = () => {
             [e.target.name]:e.target.value,
         })
     }
+    const HandleSubmit=()=>{
+        if(state.author.length<1){
+            AuthorInput.current.focus();
+            return;
+        }
+        if(state.content.length<5){
+            ContentInput.current.focus();
+            return;
+        }
 
-    const HandleSubmit=(e)=>{
-        console.log(state);
         alert("Save Success");
     }
 
     return <div className="DiaryEditor">
         <h2>Today's Diary</h2>
         <div>
-            <input name="author" value={state.author}
+            <input ref={AuthorInput} name="author" value={state.author}
                    onChange={HandelChangeState}/>
         </div>
             <div>
-                <textarea name="content" value={state.content}
+                <textarea ref={ContentInput} name="content" value={state.content}
                           onChange={HandelChangeState}/>
             </div>
         <div>
