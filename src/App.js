@@ -3,30 +3,6 @@ import DiaryEditor from "./DiaryEditor";
 import DiaryList from "./DiaryList";
 import {useRef, useState} from "react";
 
-const dummyList = [
-    {
-        id: 1,
-        author: "hsm",
-        content:"hello",
-        emotion: 5,
-        created_date: new Date().getTime()
-},
-{
-    id: 2,
-        author: "pth",
-    content:"hello",
-    emotion: 5,
-    created_date: new Date().getTime()
-},
-{
-    id: 3,
-        author: "ksl",
-    content:"hello",
-    emotion: 5,
-    created_date: new Date().getTime()
-},
-]
-
 
 function App() {
     const [data,setData]=useState([]);
@@ -44,10 +20,16 @@ function App() {
         dataId.current+=1;
         setData([newItem,...data])
     };
+
+    const onDelete=(targetId)=>{
+        const newDiaryList =data.filter((it)=>it.id!==targetId);
+        setData(newDiaryList);
+    };
+
     return (
         <div className="App">
             <DiaryEditor onCreate={onCreate}/>
-            <DiaryList diaryList={data}/>
+            <DiaryList onDelete={onDelete} diaryList={data}/>
         </div>
     );
 }
