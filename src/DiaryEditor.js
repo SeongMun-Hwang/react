@@ -44,6 +44,7 @@ const DiaryEditor = ({onCreate}) => {
                           onChange={HandelChangeState}/>
             </div>
         <div>
+            <span>Emotion level:</span>
             <select name={"emotion"} value={state.emotion} onChange={HandelChangeState}>
                 <option value={1}> 1 </option>
                 <option value={2}> 2 </option>

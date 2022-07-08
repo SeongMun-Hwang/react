@@ -1,10 +1,8 @@
 import './App.css';
 import DiaryEditor from "./DiaryEditor";
 import DiaryList from "./DiaryList";
-import {useEffect, useRef, useState} from "react";
+import {useEffect, useMemo, useRef, useState} from "react";
 import LifeCycle from "./LifeCycle";
-
-//https://jsonplaceholder.typicode.com/comments
 
 function App() {
     const [data,setData]=useState([]);
@@ -52,10 +50,25 @@ function App() {
             data.map((it)=>it.id===targetId?{...it,content: newContent}:it
             ));
     }
+
+    const getDiaryAnalysis=useMemo(()=>{
+        console.log("diary analysis start");
+        const goodCount=data.filter((it)=>it.emotion>=3).length;
+        const badCount=data.length-goodCount;
+        const goodRatio=(goodCount/data.length)*100;
+        return{goodCount,badCount,goodRatio};
+    },[data.length]);
+
+    const {goodCount, badCount, goodRatio}=getDiaryAnalysis;
+
     return (
         <div className="App">
             <LifeCycle/>
             <DiaryEditor onCreate={onCreate}/>
+            <div>All Diary:{data.length}</div>
+            <div>number of good emotion diary: {goodCount}</div>
+            <div>number of bad emotion diary: {badCount}</div>
+            <div>percentage of good emotion diary:{goodRatio}</div>
             <DiaryList onEdit={onEdit} onRemove={onRemove} diaryList={data}/>
         </div>
     );
