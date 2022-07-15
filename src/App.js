@@ -1,7 +1,7 @@
 import './App.css';
 import DiaryEditor from "./DiaryEditor";
 import DiaryList from "./DiaryList";
-import {useCallback, useEffect, useMemo, useReducer, useRef, useState} from "react";
+import React, {useCallback, useEffect, useMemo, useReducer, useRef, useState} from "react";
 import LifeCycle from "./LifeCycle";
 
 const reducer=(state,action)=>{
@@ -27,6 +27,9 @@ const reducer=(state,action)=>{
             return state;
     }
 };
+
+export const DiaryStateContext=React.createContext();
+export const DiaryDispatchContext=React.createContext();
 
 function App() {
     // const [data,setData]=useState([]);
@@ -72,6 +75,10 @@ function App() {
         dispatch({type:'EDIT',targetId,newContent})
     },[]);
 
+    const memorizedDispatches=useMemo(()=>{
+        return {onCreate,onRemove,onEdit}
+    },[])
+
     const getDiaryAnalysis=useMemo(()=>{
         const goodCount=data.filter((it)=>it.emotion>=3).length;
         const badCount=data.length-goodCount;
@@ -82,15 +89,19 @@ function App() {
     const {goodCount, badCount, goodRatio}=getDiaryAnalysis;
 
     return (
-        <div className="App">
-            <LifeCycle/>
-            <DiaryEditor onCreate={onCreate}/>
-            <div>All Diary:{data.length}</div>
-            <div>number of good emotion diary: {goodCount}</div>
-            <div>number of bad emotion diary: {badCount}</div>
-            <div>percentage of good emotion diary:{goodRatio}</div>
-            <DiaryList onEdit={onEdit} onRemove={onRemove} diaryList={data}/>
-        </div>
+        <DiaryStateContext.Provider value={data}>
+            <DiaryDispatchContext.Provider value={memorizedDispatches}>
+                <div className="App">
+                    <LifeCycle/>
+                    <DiaryEditor/>
+                    <div>All Diary:{data.length}</div>
+                    <div>number of good emotion diary: {goodCount}</div>
+                    <div>number of bad emotion diary: {badCount}</div>
+                    <div>percentage of good emotion diary:{goodRatio}</div>
+                    <DiaryList/>
+                </div>
+            </DiaryDispatchContext.Provider>
+        </DiaryStateContext.Provider>
     );
 }
 
